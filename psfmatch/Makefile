@@ -10,7 +10,7 @@
 # Libraries required: IRAF's IMFORT, PGPLOT, CJP, KLstr, KLimgio [Fortran]
 #			 KLfio [Fortran], KLcfitsio, CFITSIO, KLutil [C]
 # Compilers: g77, gcc
-# OS: RedHat Linux
+# OS: RedHat Linux, Mac OS X
 #
 ################################################################
 
@@ -18,21 +18,21 @@ MAKE = make
 GZIP = gzip -S .gz
 
 #### Environment Variable Definitions ####
-OS = redhat
-PREFIX = /home/labrie/prgf
+OS = macosx
+PREFIX = /Users/klabrie/prgf
 LIBDIR = $(PREFIX)/lib
 
-C_PREFIX = /home/labrie/prgc
+C_PREFIX = /Users/klabrie/prgc
 C_LIBDIR = $(C_PREFIX)/lib
 C_INCLDIR = $(C_PREFIX)/include
-IRAFDIR = /iraf
+IRAFDIR = /Local/iraf
 XLIBDIR = /usr/X11R6/lib
 #PGPLOT_DIR = /pel0/pritchet/pgplot
 
-EPREFIX = $(PREFIX)/img/immatch
+EPREFIX = $(PREFIX)
 LPREFIX = $(EPREFIX)
 IPREFIX = $(EPREFIX)
-SPREFIX = $(EPREFIX)/src
+SPREFIX = $(EPREFIX)/packages/
 
 #### Compilers Variable Definitions ####
 FC = g77
@@ -47,7 +47,7 @@ PKGNAME = psfmatch
 BASIC_FILES = Makefile Changes TODO
 DOCS = $(PKGNAME).README
 VERSION = 1
-RELEASE = $(VERSION).1.3
+RELEASE = $(VERSION).1.4
 
 #### Libraries ####
 IMFORTLIBS = $(IRAFDIR)/irafbin/bin.$(OS)/libimfort.a \
@@ -87,22 +87,23 @@ fixkernel : $(FIXOBJ)
 		$(IMFORTLIBS)
 
 ## Installing ##
-.PHONY: install
+.PHONY: install isntall-src
 install :
+	install -d -m 0755 $(EPREFIX)/bin
 	@for bin in $(BINS) ; do \
-	  install -m 0755 -D $$bin $(EPREFIX)/; \
+	  install -m 0755 $$bin $(EPREFIX)/bin/; \
 	done
 
-.PHONY: install-src
 install-src :
+	install -d -m 0755 $(SPREFIX)/$(PKGNAME)
 	@for file in $(SRC) ; do \
-	  install -m 0644 -D $$file $(SPREFIX)/$(PKGNAME)/; \
+	  install -m 0644 $$file $(SPREFIX)/$(PKGNAME)/; \
 	done
 	@for file in $(BASIC_FILES) ; do \
-	  install -m 0644 -D $$file $(SPREFIX)/$(PKGNAME)/; \
+	  install -m 0644 $$file $(SPREFIX)/$(PKGNAME)/; \
 	done
 	@for file in $(DOCS) ; do \
-	  install -m 0644 -D $$file $(SPREFIX)/$(PKGNAME)/; \
+	  install -m 0644 $$file $(SPREFIX)/$(PKGNAME)/; \
 	done
 
 ## Packaging ##
