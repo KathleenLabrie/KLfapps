@@ -1,0 +1,23 @@
+Modification history.
+
+Jan 17, 2001:
+  Add support for FITS files.
+  	Determine image type, call appropriate subroutine.  For IRAF images,
+	'iraf_read_r4' and 'iraf_write_r4' (CJP, Fortran, CJP.a).  For FITS 
+	images, 'fits_read_r4' and 'fits_write_r4' (KL, Fortran/C, KLimgio.a).
+
+Feb-Mar, 2001:
+  User can set kernel size.  User can give a list of source to use instead
+  of relying on automatic detection.  Can't remember the other changes.
+
+Jun 1, 2001:
+  Try to find mysterious SegFault.  => Need more than 64MB of memory!
+  Makefile maintenance. 
+
+Sep 19, 2001: v[0.1.2]
+	- Makefile maintenance
+
+Jan 23, 2002: v[0.1.3]
+  * Allow user to choose which image must be subtracted from the other.
+	- Modifications in user input parsing and at the 'diff(i)' statement.
+  * Makefile maintenance: add target for source installation.

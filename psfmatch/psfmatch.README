@@ -1,0 +1,76 @@
+Summary:
+
+PSF-match two IRAF images (real or simulated). Compensates for small 
+shifts, photometric zeropoints, offsets, as well as PSF differences!
+Program makes the first-mentioned image look like the second image,
+or just prints out info about the images if no output image specified.
+
+How to use it:
+
+  Usage:  psfmatch fnm0 fnm1 zmin zmax [fnmout]
+
+  where fnm0 = name of first input image (the one to be convolved, normally
+	       the good seeing image)
+	fnm1 = name of second input image (the bad seeing one to be matched)
+	zmin, zmax = peak intensity range for PSF stars, after sky subtraction
+        fnmout = output blurred image name - if not given then the program 
+               computes/prints out information only, without producing
+	       output images. (Convolving the image takes some time, as
+	       does fitting the profile with a Moffat function - so you
+	       do either one or t'other.)
+
+  Difference image goes to "diff_psfm". (All output images are overwritten
+  if they already exist.) Summary output goes to 'psfmatch.log'.
+
+  Amazing - compensates for small shifts, photometric zeropoints, offsets,
+  as well as PSF differences! 
+
+  Hardwired parameters: nmax = max image size; nkxy= kernel is nkxy x nkxy;
+  nxystar - postage stamps around each star are nxystar x nxystar; nstarmax
+  is the max # of stars.
+
+Algorithm:
+
+- program automatically scans for *isolated* psf stars within the
+  given peak intensity value range
+- uses least squares to calculate the best value of each kernel element
+  using these stars
+- makes the first image look like the second one
+- If an output image name is not given, then program fits a Moffat fcn
+  to each star, and gives info on relative photometric normalization
+  (from sum of kernel elements), and FWHMs and relative shifts (from
+  Moffat fcn fit).
+
+Comments:
+
+- See notes of tests of various kinds in ~/faintgal/progs/README.SN.tests.
+
+- At present, all isolated psf stars are used initially. A median chisq
+  is computed, and then all stars with chisq > 2*chisq(mdn) are rejected
+  in the second pass. 
+
+- Tried mapping kernel variations, simply by fitting a 2D surface to each
+  kernel coefficient separately. Didn't really improve things at all in the
+  real data, at least not for a 2K x 2K image based on Sep10 and Oct10.
+  Then tried this technique using artificial data (add2gauss.f, which makes 
+  a grid of artificial stars, with a built in gradient in PSF size and
+  offsets). Seemed to work sort of OK, especially considering that the
+  gradients involved were pretty extreme. Still, decided that it wasn't really
+  necessary. See 'test/testpsfmatch1.f' if you want to reimplement.
+
+	- The problem with this technique is that each kernel coefficient
+	  is mapped independently of all the others. This is probably
+	  why Alard's program is better (uses a basis set of Gaussians).
+
+- Seems to work just fine with kernel sizes as small as 5x5, and using
+  galaxies as PSF stars!
+
+- John found that noise in his difference image was lower than in mine -
+  just due to different kernel smoothing, actually has zero effect on
+  finding completeness at a given mag. See README file in
+  /sol6/pritchet/SN/chip02/test
+
+- Common error: not using *aligned* images!
+
+
+See notes of tests of various kinds in ~/faintgal/progs/README.SN.tests.
